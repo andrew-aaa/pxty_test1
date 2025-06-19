@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Мои задачи</h2>
+        <a href="{% url 'task_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Новая задача
+        </a>
+    </div>
+
+    <!-- Форма фильтрации -->
+    <form method="get" class="mb-4 card card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                {{ filter_form.status.label_tag }}
+                {{ filter_form.status }}
+            </div>
+            <div class="col-md-4">
+                {{ filter_form.priority.label_tag }}
+                {{ filter_form.priority }}
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel"></i> Фильтровать
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Список задач -->
+    {% if tasks %}
+    <div class="list-group">
+        {% for task in tasks %}
+        <div class="list-group-item mb-2">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h5>{{ task.title }}</h5>
+                    <p class="mb-1 text-muted">{{ task.description|truncatechars:100 }}</p>
+                    <small class="text-muted">
+                        Создано: {{ task.created|date:"d.m.Y H:i" }}
+                        {% if task.due_date %}
+                        | Срок: {{ task.due_date|date:"d.m.Y H:i" }}
+                        {% endif %}
+                    </small>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-{% if task.priority == 'high' %}danger{% elif task.priority == 'medium' %}warning{% else %}info{% endif %}">
+                        {{ task.get_priority_display }}
+                    </span>
+                    <span class="badge bg-{% if task.status == 'completed' %}success{% elif task.status == 'in_progress' %}primary{% else %}secondary{% endif %}">
+                        {{ task.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            <div class="mt-2">
+                <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-pencil"></i> Редактировать
+                </a>
+                <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash"></i> Удалить
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">Задачи не найдены. Измените параметры фильтра или создайте новую задачу.</div>
+    {% endif %}
+</div>
+{% endblock %}
