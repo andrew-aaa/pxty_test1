@@ -130,6 +130,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-LOGIN_URL = 'login'  # Указывает на name вашего URL для входа
-LOGIN_REDIRECT_URL = 'task_list'  # Куда перенаправлять после входа
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'task_list'
 LOGOUT_REDIRECT_URL = 'login'
